@@ -4,6 +4,7 @@ import com.roncoo.eshop.product.mapper.ProductIntroMapper;
 import com.roncoo.eshop.product.model.ProductIntro;
 import com.roncoo.eshop.product.rabbitmq.RabbitMQSender;
 import com.roncoo.eshop.product.rabbitmq.RabbitQueue;
+import com.roncoo.eshop.product.rabbitmq.RabbitUtil;
 import com.roncoo.eshop.product.service.ProductIntroService;
 import org.springframework.stereotype.Service;
 
@@ -17,19 +18,20 @@ public class ProductIntroServiceImpl implements ProductIntroService {
 	@Resource
 	private RabbitMQSender rabbitMQSender;
 	
-	public void add(ProductIntro productIntro) {
+	public void add(ProductIntro productIntro, String operationType) {
 		productIntroMapper.add(productIntro);
-		rabbitMQSender.send(RabbitQueue.DATA_CHANGE_QUEUE, "{\"event_type\": \"add\", \"data_type\": \"product_intro\", \"id\": " + productIntro.getId() + "}");
+		rabbitMQSender.send(RabbitUtil.getQueue(operationType), "{\"event_type\": \"add\", \"data_type\": \"product_intro\", \"id\": " + productIntro.getId() + ", \"product_id\": " + productIntro.getProductId() + "}");
 	}
 
-	public void update(ProductIntro productIntro) {
+	public void update(ProductIntro productIntro, String operationType) {
 		productIntroMapper.update(productIntro);
-		rabbitMQSender.send(RabbitQueue.DATA_CHANGE_QUEUE, "{\"event_type\": \"update\", \"data_type\": \"product_intro\", \"id\": " + productIntro.getId() + "}");
+		rabbitMQSender.send(RabbitUtil.getQueue(operationType), "{\"event_type\": \"update\", \"data_type\": \"product_intro\", \"id\": " + productIntro.getId() + ", \"product_id\": " + productIntro.getProductId() + "}");
 	}
 
-	public void delete(Long id) {
+	public void delete(Long id, String operationType) {
+		ProductIntro productIntro = findById(id);
 		productIntroMapper.delete(id);
-		rabbitMQSender.send(RabbitQueue.DATA_CHANGE_QUEUE, "{\"event_type\": \"delete\", \"data_type\": \"product_intro\", \"id\": " + id + "}");
+		rabbitMQSender.send(RabbitUtil.getQueue(operationType), "{\"event_type\": \"delete\", \"data_type\": \"product_intro\", \"id\": " + id + ", \"product_id\": " + productIntro.getProductId() + "}");
 	}
 
 	public ProductIntro findById(Long id) {

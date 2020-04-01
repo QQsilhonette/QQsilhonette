@@ -4,6 +4,7 @@ import com.roncoo.eshop.product.mapper.CategoryMapper;
 import com.roncoo.eshop.product.model.Category;
 import com.roncoo.eshop.product.rabbitmq.RabbitMQSender;
 import com.roncoo.eshop.product.rabbitmq.RabbitQueue;
+import com.roncoo.eshop.product.rabbitmq.RabbitUtil;
 import com.roncoo.eshop.product.service.CategoryService;
 import org.springframework.stereotype.Service;
 
@@ -17,19 +18,19 @@ public class CategoryServiceImpl implements CategoryService {
 	@Resource
 	private RabbitMQSender rabbitMQSender;
 	
-	public void add(Category category) {
+	public void add(Category category, String operationType) {
 		categoryMapper.add(category);
-		rabbitMQSender.send(RabbitQueue.DATA_CHANGE_QUEUE, "{\"event_type\": \"add\", \"data_type\": \"category\", \"id\": " + category.getId() + "}");
+		rabbitMQSender.send(RabbitUtil.getQueue(operationType), "{\"event_type\": \"add\", \"data_type\": \"category\", \"id\": " + category.getId() + "}");
 	}
 
-	public void update(Category category) {
+	public void update(Category category, String operationType) {
 		categoryMapper.update(category);
-		rabbitMQSender.send(RabbitQueue.DATA_CHANGE_QUEUE, "{\"event_type\": \"update\", \"data_type\": \"category\", \"id\": " + category.getId() + "}");
+		rabbitMQSender.send(RabbitUtil.getQueue(operationType), "{\"event_type\": \"update\", \"data_type\": \"category\", \"id\": " + category.getId() + "}");
 	}
 
-	public void delete(Long id) {
+	public void delete(Long id, String operationType) {
 		categoryMapper.delete(id);
-		rabbitMQSender.send(RabbitQueue.DATA_CHANGE_QUEUE, "{\"event_type\": \"add\", \"data_type\": \"category\", \"id\": " + id + "}");
+		rabbitMQSender.send(RabbitUtil.getQueue(operationType), "{\"event_type\": \"add\", \"data_type\": \"category\", \"id\": " + id + "}");
 	}
 
 	public Category findById(Long id) {
