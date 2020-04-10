@@ -1,11 +1,12 @@
 package com.roncoo.eshop.datasync.service;
 
+import com.roncoo.eshop.datasync.service.fallback.EshopProductServiceFallback;
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-@FeignClient(value="eshop-product-service")
+@FeignClient(value="eshop-product-service", fallback = EshopProductServiceFallback.class)
 public interface EshopProductService {
 
     @RequestMapping(value = "/brand/findById",method = RequestMethod.GET)

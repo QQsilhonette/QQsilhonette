@@ -5,7 +5,11 @@ eureka:
       
 server:
   port: 8765
-  
+
+feign:
+  hystrix:
+    enabled: true
+
 spring:
   application:
     name: eshop-datasync-service
