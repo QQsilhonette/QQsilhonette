@@ -11,5 +11,7 @@ public interface ProductInventoryService {
 	public void delete(Long id);
 	
 	public ProductInventory findById(Long id);
+
+	public ProductInventory findByProductId(Long productId);
 	
 }
