@@ -15,7 +15,10 @@ public interface ProductIntroMapper {
 	@Delete("DELETE FROM product_intro WHERE id=#{id}")  
 	public void delete(Long id);
 	
-	@Select("SELECT * FROM product_intro WHERE id=#{id}")  
+	@Select("SELECT * FROM product_intro WHERE id=#{id}")
+	@Results({
+			@Result(column = "product_id", property = "productId")
+	})
 	public ProductIntro findById(Long id);
 	
 }

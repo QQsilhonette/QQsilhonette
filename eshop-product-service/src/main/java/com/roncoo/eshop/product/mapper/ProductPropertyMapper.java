@@ -15,10 +15,16 @@ public interface ProductPropertyMapper {
 	@Delete("DELETE FROM product_property WHERE id=#{id}")  
 	public void delete(Long id);
 	
-	@Select("SELECT * FROM product_property WHERE id=#{id}")  
+	@Select("SELECT * FROM product_property WHERE id=#{id}")
+	@Results({
+			@Result(column = "product_id", property = "productId")
+	})
 	public ProductProperty findById(Long id);
 
 	@Select("SELECT * FROM product_property WHERE product_id=#{productId}")
+	@Results({
+			@Result(column = "product_id", property = "productId")
+	})
 	public ProductProperty findByProductId(Long productId);
 	
 }
