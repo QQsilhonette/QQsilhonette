@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.roncoo.eshop.datalink.service.EshopProductService;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 
@@ -14,6 +15,7 @@ import javax.annotation.Resource;
  * @date ：Created in 2020/4/1 7:36 下午
  * @description：数据直连
  */
+@RestController
 public class DataLinkController {
 
     @Resource
@@ -21,7 +23,7 @@ public class DataLinkController {
     @Resource
     private JedisPool jedisPool;
 
-    @RequestMapping("/getProduct")
+    @RequestMapping("/product")
     @ResponseBody
     public String getProduct(Long productId) {
         //TODO 读取本地ehcache
@@ -33,7 +35,7 @@ public class DataLinkController {
         if (dimProductJSON == null || "".equals(dimProductJSON)) {
             String productDataJSON = eshopProductService.findProductById(productId);
 
-            if (productDataJSON == null || "".equals(productDataJSON)) {
+            if (productDataJSON != null && !"".equals(productDataJSON)) {
                 JSONObject productDataJSONObject = JSONObject.parseObject(productDataJSON);
 
                 String productPropertyDataJSON = eshopProductService.findProductPropertyByProductId(productId);
